@@ -1,10 +1,25 @@
-import { noteMock } from '@/store/mocks'
 import { NoteInfo } from '@shared/models'
 import { atom, selector } from 'recoil'
 
-export const notesState = atom<NoteInfo[]>({
+const loadNotes = async () => {
+  const notes = await window.context.getNotes()
+  return notes.sort((a, b) => b.lastEditTime - a.lastEditTime)
+}
+
+const notesStateAsync = atom<NoteInfo[] | Promise<NoteInfo[]>>({
+  key: 'Notes Async',
+  default: loadNotes()
+})
+
+export const notesState = selector({
   key: 'Notes',
-  default: noteMock
+  get: async ({ get }) => {
+    const notes = await get(notesStateAsync)
+    return notes ? notes : null
+  },
+  set: async ({}) => {
+    return null
+  }
 })
 
 export const selectedNoteIndexState = atom<number | null>({
@@ -18,7 +33,7 @@ export const selectedNoteState = selector({
     const notes = get(notesState)
     const selectedNoteIndex = get(selectedNoteIndexState)
 
-    if (selectedNoteIndex == null) return null
+    if (selectedNoteIndex == null || !notes) return null
 
     const selectedNote = notes[selectedNoteIndex]
 
@@ -36,6 +51,7 @@ export const createEmptyNoteState = selector({
   },
   set: ({ get, set }) => {
     const notes = get(notesState)
+    if (!notes) return
     const title = `Note ${notes.length + 1}`
     const newNote: NoteInfo = {
       title,
@@ -56,7 +72,7 @@ export const deleteNoteState = selector({
   set: ({ get, set }) => {
     const notes = get(notesState)
     const selectedNote = get(selectedNoteState)
-    if (!selectedNote) return
+    if (!selectedNote || !notes) return
     set(notesState, [...notes.filter((note) => note.title != selectedNote.title)])
 
     set(selectedNoteIndexState, 0)

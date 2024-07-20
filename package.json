@@ -25,6 +25,8 @@
     "@electron-toolkit/utils": "^3.0.0",
     "@mdxeditor/editor": "^3.9.2",
     "@tailwindcss/typography": "^0.0.0-insiders.0339c42",
+    "fs-extra": "^11.2.0",
+    "lodash": "^4.17.21",
     "lucide-react": "^0.408.0",
     "recoil": "^0.7.7"
   },
@@ -32,6 +34,7 @@
     "@electron-toolkit/eslint-config-prettier": "^2.0.0",
     "@electron-toolkit/eslint-config-ts": "^2.0.0",
     "@electron-toolkit/tsconfig": "^1.0.1",
+    "@types/lodash": "^4.17.7",
     "@types/node": "^20.14.8",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",

@@ -1,6 +1,7 @@
 import { NotePreview } from '@/components'
 import { useNotesList } from '@renderer/hooks/useNotesList'
 import { cn } from '@renderer/utils'
+import { isEmpty } from 'lodash'
 import { ComponentProps } from 'react'
 
 export type NotePreviewListProps = ComponentProps<'ul'> & {
@@ -9,7 +10,10 @@ export type NotePreviewListProps = ComponentProps<'ul'> & {
 
 export const NotePreviewList = ({ onSelect, className, ...props }: NotePreviewListProps) => {
   const { notes, selectedNoteIndex, handleNoteSelect } = useNotesList({ onSelect })
-  if (!notes.length) {
+
+  if (!notes) return null
+
+  if (isEmpty(notes)) {
     return (
       <ul className={cn('text-center pt-4', className)} {...props}>
         <span>No Notes Yet!</span>
