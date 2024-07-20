@@ -6,7 +6,7 @@ if (!process.contextIsolated) {
 
 try {
   contextBridge.exposeInMainWorld('context', {
-    //Todo
+    locale: navigator.language
   })
 } catch (error) {
   console.error('Error : ', error)
