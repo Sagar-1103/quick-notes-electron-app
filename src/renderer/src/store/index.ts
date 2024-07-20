@@ -28,3 +28,37 @@ export const selectedNoteState = selector({
     }
   }
 })
+
+export const createEmptyNoteState = selector({
+  key: 'Create Note',
+  get: ({}) => {
+    return null
+  },
+  set: ({ get, set }) => {
+    const notes = get(notesState)
+    const title = `Note ${notes.length + 1}`
+    const newNote: NoteInfo = {
+      title,
+      lastEditTime: Date.now()
+    }
+
+    set(notesState, [newNote, ...notes.filter((note) => note.title != newNote.title)])
+
+    set(selectedNoteIndexState, 0)
+  }
+})
+
+export const deleteNoteState = selector({
+  key: 'Delete Note',
+  get: ({}) => {
+    return null
+  },
+  set: ({ get, set }) => {
+    const notes = get(notesState)
+    const selectedNote = get(selectedNoteState)
+    if (!selectedNote) return
+    set(notesState, [...notes.filter((note) => note.title != selectedNote.title)])
+
+    set(selectedNoteIndexState, 0)
+  }
+})
