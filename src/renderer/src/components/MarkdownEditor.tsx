@@ -6,11 +6,15 @@ import {
   quotePlugin,
   thematicBreakPlugin
 } from '@mdxeditor/editor'
+import { useMarkdowEditor } from '@renderer/hooks/useMarkdowEditor'
 
 export const MarkdownEditor = () => {
+  const { selectedNote } = useMarkdowEditor()
+  if (!selectedNote) return null
   return (
     <MDXEditor
-      markdown={'# MDX Editor'}
+      key={selectedNote.title}
+      markdown={'content' in selectedNote ? selectedNote.content : ''}
       plugins={[
         headingsPlugin(),
         listsPlugin(),
