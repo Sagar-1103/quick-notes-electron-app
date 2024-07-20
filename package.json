@@ -23,6 +23,8 @@
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.1",
     "@electron-toolkit/utils": "^3.0.0",
+    "@mdxeditor/editor": "^3.9.2",
+    "@tailwindcss/typography": "^0.0.0-insiders.0339c42",
     "lucide-react": "^0.408.0"
   },
   "devDependencies": {
