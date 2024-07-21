@@ -11,6 +11,7 @@ export const useNotesList = ({ onSelect }: { onSelect?: () => void }) => {
     const notes = await window.context.getNotes()
 
     setNotes(notes.sort((a, b) => b.lastEditTime - a.lastEditTime))
+    setSelectedNoteIndex(0)
   }
   const loadContent = async () => {
     let cont: string
@@ -19,6 +20,7 @@ export const useNotesList = ({ onSelect }: { onSelect?: () => void }) => {
         notes?.[selectedNoteIndex ? selectedNoteIndex : 0]?.title
       )
       const note = notes[selectedNoteIndex]
+      console.log(cont)
 
       const newSelectedNote = { ...note, content: cont }
       setSelectedNote(newSelectedNote)
@@ -31,6 +33,7 @@ export const useNotesList = ({ onSelect }: { onSelect?: () => void }) => {
 
   useEffect(() => {
     loadContent()
+    console.log(selectedNoteIndex)
   }, [selectedNoteIndex])
 
   const handleNoteSelect = async (index: number) => {

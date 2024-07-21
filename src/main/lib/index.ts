@@ -1,8 +1,11 @@
-import { appDirectoryName, fileEncoding } from '@shared/constants'
+import { appDirectoryName, fileEncoding, welcomeFileName } from '@shared/constants'
 import { NoteInfo } from '@shared/models'
 import { GetNotes, ReadNote } from '@shared/types'
-import { ensureDir, readdir, readFile, stat } from 'fs-extra'
+import { app } from 'electron'
+import { ensureDir, readdir, readFile, stat, writeFile } from 'fs-extra'
+import { isEmpty } from 'lodash'
 import { homedir } from 'os'
+import path from 'path'
 
 export const getRootDir = () => {
   return `${homedir()}/${appDirectoryName}`
@@ -19,6 +22,14 @@ export const getNotes: GetNotes = async () => {
     })
 
     const notes = notesFileNames.filter((filename) => filename.endsWith('.md'))
+    if (isEmpty(notes)) {
+      console.log('empty')
+      const resourcesPath = app.getAppPath()
+      const welcomeFilePath = path.join(resourcesPath, 'resources', welcomeFileName)
+      const content = await readFile(welcomeFilePath, { encoding: fileEncoding })
+
+      await writeFile(`${rootDir}/${welcomeFileName}`, content, { encoding: fileEncoding })
+    }
     return Promise.all(notes.map(getNoteInfoFromFileName))
   } catch (error) {
     throw new Error('Couldnt get notes from system')
