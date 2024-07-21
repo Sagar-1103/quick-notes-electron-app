@@ -1,25 +1,9 @@
 import { NoteInfo } from '@shared/models'
 import { atom, selector } from 'recoil'
 
-const loadNotes = async () => {
-  const notes = await window.context.getNotes()
-  return notes.sort((a, b) => b.lastEditTime - a.lastEditTime)
-}
-
-const notesStateAsync = atom<NoteInfo[] | Promise<NoteInfo[]>>({
-  key: 'Notes Async',
-  default: loadNotes()
-})
-
-export const notesState = selector({
+export const notesState = atom<NoteInfo[]>({
   key: 'Notes',
-  get: async ({ get }) => {
-    const notes = await get(notesStateAsync)
-    return notes ? notes : null
-  },
-  set: async ({}) => {
-    return null
-  }
+  default: []
 })
 
 export const selectedNoteIndexState = atom<number | null>({
@@ -27,20 +11,12 @@ export const selectedNoteIndexState = atom<number | null>({
   default: null
 })
 
-export const selectedNoteState = selector({
+export const selectedNoteState = atom({
   key: 'Selected Note',
-  get: ({ get }) => {
-    const notes = get(notesState)
-    const selectedNoteIndex = get(selectedNoteIndexState)
-
-    if (selectedNoteIndex == null || !notes) return null
-
-    const selectedNote = notes[selectedNoteIndex]
-
-    return {
-      ...selectedNote,
-      content: `Hello from Note ${selectedNoteIndex}`
-    }
+  default: {
+    title: '',
+    lastEditTime: Date.now(),
+    content: ''
   }
 })
 
@@ -51,7 +27,6 @@ export const createEmptyNoteState = selector({
   },
   set: ({ get, set }) => {
     const notes = get(notesState)
-    if (!notes) return
     const title = `Note ${notes.length + 1}`
     const newNote: NoteInfo = {
       title,
@@ -72,7 +47,7 @@ export const deleteNoteState = selector({
   set: ({ get, set }) => {
     const notes = get(notesState)
     const selectedNote = get(selectedNoteState)
-    if (!selectedNote || !notes) return
+    if (!selectedNote) return
     set(notesState, [...notes.filter((note) => note.title != selectedNote.title)])
 
     set(selectedNoteIndexState, 0)

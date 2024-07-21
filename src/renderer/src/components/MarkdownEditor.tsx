@@ -10,11 +10,13 @@ import { useMarkdowEditor } from '@renderer/hooks/useMarkdowEditor'
 
 export const MarkdownEditor = () => {
   const { selectedNote } = useMarkdowEditor()
+
   if (!selectedNote) return null
+
   return (
     <MDXEditor
       key={selectedNote.title}
-      markdown={'content' in selectedNote ? selectedNote.content : ''}
+      markdown={selectedNote.content}
       plugins={[
         headingsPlugin(),
         listsPlugin(),
