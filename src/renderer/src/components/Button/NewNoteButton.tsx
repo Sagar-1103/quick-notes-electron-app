@@ -2,11 +2,11 @@ import { ActionButton, ActionButtonProps } from '@/components'
 import { notesState, selectedNoteIndexState } from '@renderer/store'
 import { NoteInfo } from '@shared/models'
 import { PlusSquareIcon } from 'lucide-react'
-import { useRecoilState, useSetRecoilState } from 'recoil'
+import { useRecoilState } from 'recoil'
 
 export const NewNoteButton = ({ ...props }: ActionButtonProps) => {
   const [notes, setNotes] = useRecoilState(notesState)
-  const setSelectedNoteIndex = useSetRecoilState(selectedNoteIndexState)
+  const [selectedNoteIndex, setSelectedNoteIndex] = useRecoilState(selectedNoteIndexState)
 
   const handleCreation = async () => {
     const title = await window.context.createNote()
@@ -18,8 +18,7 @@ export const NewNoteButton = ({ ...props }: ActionButtonProps) => {
     }
 
     setNotes([newNote, ...notes.filter((note) => note.title != newNote.title)])
-
-    setSelectedNoteIndex(0)
+    setSelectedNoteIndex(selectedNoteIndex != null ? selectedNoteIndex + 1 : selectedNoteIndex)
   }
   return (
     <ActionButton onClick={handleCreation} {...props}>

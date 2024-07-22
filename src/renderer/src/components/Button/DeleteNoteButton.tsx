@@ -16,7 +16,7 @@ export const DeleteNoteButton = ({ ...props }: ActionButtonProps) => {
     if (!isDeleted) return
 
     setNotes([...notes.filter((note) => note.title !== selectedNote.title)])
-    selectedNoteIndex(0)
+    selectedNoteIndex(null)
   }
 
   return (
