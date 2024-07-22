@@ -1,15 +1,22 @@
 import { ActionButton, ActionButtonProps } from '@/components'
-import { deleteNoteState } from '@renderer/store'
+import { notesState, selectedNoteIndexState, selectedNoteState } from '@renderer/store'
 import { Trash2 } from 'lucide-react'
-import { useRecoilCallback } from 'recoil'
+import { useRecoilState, useSetRecoilState } from 'recoil'
 
 export const DeleteNoteButton = ({ ...props }: ActionButtonProps) => {
-  const deleteNote = useRecoilCallback(({ set }) => () => {
-    set(deleteNoteState, null)
-  })
+  const [notes, setNotes] = useRecoilState(notesState)
+  const [selectedNote, setSelectedNote] = useRecoilState(selectedNoteState)
+  const selectedNoteIndex = useSetRecoilState(selectedNoteIndexState)
 
-  const handleDelete = () => {
-    deleteNote()
+  const handleDelete = async () => {
+    if (!selectedNote || !notes.length) return
+
+    const isDeleted = await window.context.deleteNote(selectedNote.title)
+
+    if (!isDeleted) return
+
+    setNotes([...notes.filter((note) => note.title !== selectedNote.title)])
+    selectedNoteIndex(0)
   }
 
   return (
